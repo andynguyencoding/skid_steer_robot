@@ -1,0 +1,22 @@
+# Create package with CPP
+ros2 pkg create --build-type ament_cmake --license Apache-2.0 my_package --dependencies rclcpp std_msgs
+
+# Create package with Python
+ros2 pkg create --build-type ament_python --license Apache-2.0 my_package --dependencies rclpy std_msgs
+
+# view robot in rviz
+ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(<robot.urdf)"
+ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(cat robot.urdf)"
+ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(xacro robot.urdf.xacro)"
+
+rviz2 -d src/skid_steer_robot/config/robot.rviz
+
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
+
+# run gazebo with robot
+ros2 launch skid_steer_robot rsp.launch.py use_sim_time:=true
+
+ros2 launch gazebo_ros gazebo.launch.py
+
+ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity robot_four
+
